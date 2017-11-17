@@ -1,0 +1,159 @@
+body {
+    font-family: monospace;
+    overflow-x: hidden;
+}
+#message {
+    display: none;
+    position: absolute;
+    top: 0px;
+    right: 10%;
+    left: 10%;
+    background-color: #B14949;
+}
+#message.open {
+    display: block;
+}
+#loginform {
+    display: none;
+    position: absolute;
+    left: 30%;
+    top: 20%;
+    width: 50%;
+    height: 100px;
+}
+#container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+#map {
+    background-color: #C1E6B6;
+}
+#map > div {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    transition: left 1s, top 1s, opacity 2s;
+}
+.Umgebung > img {
+    position: absolute;
+    bottom: 0;
+    left: -10%;
+}
+.Player > img {
+    position: absolute;
+    bottom: 0;
+    left: 15%;
+}
+.Zeug {
+    background-color: #5E3535;
+}
+.ROBOT {
+    z-index: 1;
+    /* filter: drop-shadow(1px -1px 2px #333); */
+
+    animation-duration: 3s;
+    animation-name: robot;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+.SCIENTIST {
+    z-index: 1;
+    /* filter: drop-shadow(1px -1px 2px #333); */
+
+    animation-duration: 3s;
+    animation-name: scientist;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+#controls {
+    position: fixed;
+    bottom: 10px;
+    /*right: 26%;*/
+    right: 1%;
+    transition: right 0.5s;
+    text-align: right;
+}
+#controls > input {
+    padding-bottom: 20px;
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+#options {
+    z-index: 1; 
+    position: absolute;
+    width: 25%;
+    height: 100%;
+    left: 75%;
+    top: 0px;
+    background-color: #DDD;
+    transition: left 0.5s;
+}
+#options > .options {
+    text-align: center;
+}
+.options .drop {
+    cursor: pointer;
+}
+.options #left {
+    float: left;
+    width: 50%;
+}
+.options #right {
+    float: right;
+    width: 50%;
+}
+#options > .options > input {
+    width: 90%;
+}
+#options.open {
+    left: 0px;
+}
+#options.open #togglemenue{
+    margin-left: 0px;
+}
+#togglemenue {
+    display: none;
+    font-size: 350%;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    cursor: pointer;
+    margin-left: -50px;
+    background-color: #DDD;
+}
+
+@media (max-width: 1000px) {
+    #options {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 100%;
+        top: 0px;
+        background-color: #DDD;
+        transition: left 0.5s;
+    }
+    #togglemenue {
+        display: block;
+    }
+    #controls {
+        right: 1%;
+    }
+}
+
+@keyframes robot {
+    from { transform: rotate(0deg) translate(0, 0px); }
+    25% { transform: rotate(3deg) translate(0, 2px); }
+    95% { transform: rotate(-3deg) translate(0, -2px); }
+    to { transform: rotate(0deg) translate(0, 0px); }
+}
+@keyframes scientist {
+    from { transform: translate(0, 0px); }
+    25% { transform: translate(-1px, 0); }
+    95% { transform: translate(1px, 0); }
+    to { transform: translate(0, 0px); }
+}
