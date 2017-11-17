@@ -1,3 +1,6 @@
+/*
+	Der Mapgenerator ist jetzt in server.js als Endpunkt
+*/
 var fs = require('fs');
 
 var globalScale = 16
