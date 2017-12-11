@@ -87,15 +87,16 @@ app.post('/move', function (req, res) {
         var userObject = getCurrentPlayer(req)
         if (!userObject.isMoving) {
             // trap???
-            var mapPoint = findMapPoint(userObject.x,userObject.y)
-            mapPoint.lifetime = userObject.energy || 30
-            if (mapPoint.name == 'Menschenfalle' && userObject.team == 'SCIENTIST') {
-                bodyStr = ''
-                res.end( JSON.stringify({'moved': false}) )
-            }
-            if (mapPoint.name == 'Roboterfalle' && userObject.team == 'ROBOT') {
-                bodyStr = ''
-                res.end( JSON.stringify({'moved': false}) )
+            var mapPoints = findMapPoints(userObject.x,userObject.y)
+            for (var index = 0; index < mapPoints.length; index++) {
+                if (mapPoints[index].name == 'Menschenfalle' && userObject.team == 'SCIENTIST') {
+                    bodyStr = ''
+                    res.end( JSON.stringify({'moved': false}) )
+                }
+                if (mapPoints[index].name == 'Roboterfalle' && userObject.team == 'ROBOT') {
+                    bodyStr = ''
+                    res.end( JSON.stringify({'moved': false}) )
+                }    
             }
             
             switch (bodyStr) {
@@ -169,21 +170,21 @@ app.post('/action', function (req, res) {
             req.connection.destroy();
         }
     });
-    req.on('end',function () {
+    req.on('end', function () {
         var currentPlayer = getCurrentPlayer(req)
         if (currentPlayer) {
             if (bodyStr == 'BLOCK') {
-                var mapPoint = findMapPoint(currentPlayer.x, currentPlayer.y)
-                if (!mapPoint) {
-                    if (currentPlayer.team == 'ROBOT' && currentPlayer.energy > 10) {
+                var mapPoints = findMapPoints(currentPlayer.x, currentPlayer.y)
+                if (mapPoints.length == 0) {
+                    if (currentPlayer.team == 'ROBOT' && currentPlayer.energy >= 10) {
                         var newMapPoint = new mapItem (currentPlayer.x, currentPlayer.y, 'Menschenfalle', 'Falle', false, false, 'Falle1.gif')
-                        newMapPoint.lifetime = currentPlayer.energy
+                        newMapPoint.lifetime = 3 * currentPlayer.energy
                         currentPlayer.energy = currentPlayer.energy - 10
                         cachedFiles['map.json'].push(newMapPoint)
-                    res.end( JSON.stringify({'error': false}) )
-                    } else if (currentPlayer.team == 'SCIENTIST' && currentPlayer.energy > 10) {
+                        res.end( JSON.stringify({'error': false}) )
+                    } else if (currentPlayer.team == 'SCIENTIST' && currentPlayer.energy >= 10) {
                         var newMapPoint = new mapItem (currentPlayer.x, currentPlayer.y, 'Roboterfalle', 'Falle', false, false, 'Falle2.gif')
-                        newMapPoint.lifetime = currentPlayer.energy
+                        newMapPoint.lifetime = 3 * currentPlayer.energy
                         currentPlayer.energy = currentPlayer.energy - 10
                         cachedFiles['map.json'].push(newMapPoint)
                         res.end( JSON.stringify({'error': false}) )
@@ -191,11 +192,12 @@ app.post('/action', function (req, res) {
                 }
             }
             if (bodyStr == 'HARVEST') {
-                var mapPoint = findMapPoint(currentPlayer.x, currentPlayer.y)
-                if (!mapPoint) {
-                    if (mapPoint.name == 'Stein' && mapPoint.interaction && currentPlayer.energy <= 180) {
-                        currentPlayer.energy++
-                        res.end( JSON.stringify({'error': false}) )
+                var mapPoints = findMapPoints(currentPlayer.x, currentPlayer.y)
+                for (var index = 0; index < mapPoints.length; index++) {
+                    if (mapPoints[index].name == 'Stein' && currentPlayer.energy <= 200) {
+                        currentPlayer.energy = currentPlayer.energy + 10
+                    } else {
+                        res.end( JSON.stringify({'error': true}) )
                     }
                 }
             }
@@ -251,9 +253,9 @@ app.post('/dropItem', function (req, res) {
         for (var index = 0; index < inventar.length; index++) {
             if (inventar[index] == bodyStr) {
                 // found item
-                var mapPoint = findMapPoint(currentPlayer.x, currentPlayer.y)
-                if (mapPoint) {
-                    var itemsOnGround = mapPoint.onground
+                var mapPoints = findMapPoints(currentPlayer.x, currentPlayer.y)
+                if (mapPoints.length > 0) {
+                    var itemsOnGround = mapPoints[0].onground
                     itemsOnGround.push(inventar[index])
                 } else {
                     var newMapPoint = new mapItem(currentPlayer.x, currentPlayer.y, 'Zeug', 'Zeug', true, false)
@@ -282,8 +284,8 @@ app.post('/pickupItem', function (req, res) {
         var currentPlayer = getCurrentPlayer(req)
         var inventar = currentPlayer.inventar
         if (inventar < maxInventarSize - 1) {
-            var mapPoint = findMapPoint(currentPlayer.x, currentPlayer.y)
-            var itemsOnGround = mapPoint.onground
+            var mapPoints = findMapPoints(currentPlayer.x, currentPlayer.y)
+            var itemsOnGround = mapPoints[0].onground
             for (var index = 0; index < itemsOnGround.length; index++) {
                 if (itemsOnGround[index] == bodyStr) {
                     // found item
@@ -368,15 +370,16 @@ function select (id, source) {
     return errorObject('not found');    
 }
 
-function findMapPoint (x, y) {
+function findMapPoints (x, y) {
     var map = cachedFiles['map.json']
-
+    var result = []
+    
     for (var index = 0; index < map.length; index++) {
         if (map[index].x == x && map[index].y == y) {
-            return map[index];
+            result.push(map[index]);
         }
     }
-    return false;
+    return result || false;
 }
 
 function findMapPlayers (x, y) {
@@ -419,7 +422,7 @@ function isBlocked (x, y) {
 
 function cleanTraps () {
     if (cachedFiles['map.json']) {
-       var mapPoints = cachedFiles['map.json']
+        var mapPoints = cachedFiles['map.json']
         for (var index = 0; index < mapPoints.length; index++) {
             if (mapPoints[index].type == 'Falle' && mapPoints[index].lifetime) {
                 mapPoints[index].lifetime--
@@ -427,7 +430,7 @@ function cleanTraps () {
             if (mapPoints[index].lifetime <= 0) {
                 mapPoints.splice(index,1)
             }
-        } 
+        }
     }
 
     setTimeout(cleanTraps, 1000)

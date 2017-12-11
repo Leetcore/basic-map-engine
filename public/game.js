@@ -96,7 +96,7 @@ function getCurrentPlayer () {
     }, 'token='+ token)
 }
 
-function updateMapLoop ()  {
+function updateMapLoop () {
     // request map
     requestAPI('GET', '/map', function (data) {
         if (data.length > 0) {
@@ -256,7 +256,7 @@ function playerMove (direction) {
 function playerMoveDirection (direction) {
     // request
     requestAPI('POST', '/move', function (data) {
-        // updateMap()
+        updateMap()
     }, direction)
 }
 
