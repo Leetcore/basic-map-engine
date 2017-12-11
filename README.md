@@ -2,4 +2,4 @@
 
 Auto-Login, Cookies, 2 Teams, Random Map Generator.
 
-![screenshit](image.png)
+![screenshot](image.png)
