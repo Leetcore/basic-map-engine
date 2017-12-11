@@ -1,9 +1,0 @@
-[
-    {"name": "Brett", "type": "Material", "costs": 1},
-    {"name": "Stein", "type": "Material", "costs": 1},
-    {"name": "Stroh", "type": "Material", "costs": 1},
-    {"name": "Stock", "type": "Material", "costs": 1},
-    {"name": "Hacke", "type": "Werkzeug", "costs": 3, "damage": 3, "build":
-        [{"name": "Stein", "count": 1}, {"name": "Stock", "count": 1}]
-    }
-]
