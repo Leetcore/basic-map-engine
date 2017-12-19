@@ -1,46 +1,46 @@
 <!DOCTYPE html>
-<html lang='de'>
+<html lang="de">
     <head>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-		<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-        <link rel='stylesheet' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" href="style.css">
         <title>Robots vs. Scientists</title>
 	</head>
 	<body>
-        <div id='container'>
-            <div id='map'></div>
+        <div id="container">
+            <div id="map"></div>
         </div>
         
-        <div id='controls'>
+        <div id="controls">
             x = <span id="x"></span>, y = <span id="y"></span>, energy = <span id="energy"></span><br/><br/>
-            <input type='button' id='playerHarvest' onclick='action("HARVEST")' value='H'>
-            <input type='button' id='playerBlock' onclick='action("BLOCK")' value='T'>
-            <input type='button' id='moveLEFT' onclick='playerMove("LEFT")' value='←'>
-            <input type='button' id='moveUP' onclick='playerMove("UP")' value='↑'>
-            <input type='button' id='moveDOWN' onclick='playerMove("DOWN")' value='↓'>
-            <input type='button' id='moveRIGHT' onclick='playerMove("RIGHT")' value='→'>
+            <input type="button" id="playerHarvest" onclick="action('HARVEST')" title="harvest" value="H">
+            <input type="button" id="playerBlock" onclick="action('BLOCK')"  title="trap" value="T">
+            <input type="button" id="moveLEFT" onclick="playerMove('LEFT')" value="←">
+            <input type="button" id="moveUP" onclick="playerMove('UP')" value="↑">
+            <input type="button" id="moveDOWN" onclick="playerMove('DOWN')" value="↓">
+            <input type="button" id="moveRIGHT" onclick="playerMove('RIGHT')" value="→">
         </div>
         <!--
-        <div id='options'>
-            <div id='togglemenue' onclick='toggleMENU()' title='Aktionmenü'>
+        <div id="options">
+            <div id="togglemenue" onclick="toggleMENU()" title="Aktionmenü">
                 >
             </div>
             
-            <div class='options'>
+            <div class="options">
                 <h2>Options</h2>
-                <div id='top'></div>
-                <div style='clear:both'></div>
-                <div id='left'></div>
-                <div id='right'></div>
-                <div style='clear:both'></div>
+                <div id="top"></div>
+                <div style="clear:both"></div>
+                <div id="left"></div>
+                <div id="right"></div>
+                <div style="clear:both"></div>
             </div>
         </div>
         -->
-        <div id='message'></div>
-        <div id='loginform'>
-            <input type='text' placeholder='Dein Token'/>
-            <input type='button' onclick='login()' value='Login'/>
+        <div id="message"></div>
+        <div id="loginform">
+            <input type="text" placeholder="Dein Token"/>
+            <input type="button" onclick="login()" value="Login"/>
         </div>
-        <script src='game.js'></script>
+        <script src="game.js"></script>
 	</body>
 </html>

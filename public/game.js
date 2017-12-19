@@ -32,7 +32,12 @@ function setup() {
                 case 40:
                     playerMove('DOWN')
                     break
-        
+                case 72:
+                    action('HARVEST')
+                    break
+                case 84:
+                    action('BLOCK')
+                    break
                 default: return;
             }
         }
@@ -84,7 +89,6 @@ function login () {
         document.getElementById('loginform').style.display = "none"
         // start game
         updateMap()
-        initGame()
     }, 'token='+ userToken)
 }
 

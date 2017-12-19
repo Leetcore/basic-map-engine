@@ -4,16 +4,10 @@ var cookieParser = require('cookie-parser')
 
 var app = express();
 
-var allFiles = ['players.json', 'map.json', 'tokens.json', 'globalIDs.json', 'enemies.json']
+var allFiles = ['players.json', 'map.json', 'tokens.json', 'globalIDs.json']
 var allRobotSprites = ['Robot1.gif']
 var allScientistSprites = ['Scientist.gif']
 
-// items
-var items = []
-fs.readFile(__dirname + '/files/items.json', {encoding: 'utf8'}, function (err, data) {
-    items = JSON.parse(data);
-    console.log('The file items.json was read!')
-})
 var globalID = 1
 var maxSize = 100
 var pages = {}
@@ -42,7 +36,7 @@ initFiles()
 
 // REST
 app.post('/getCurrentPlayer', function (req, res) {
-    var userObject = getcurrentPlayer(req)
+    var userObject = getCurrentPlayer(req)
     res.end( JSON.stringify( userObject ))
 })
 
@@ -91,11 +85,11 @@ app.post('/move', function (req, res) {
             for (var index = 0; index < mapPoints.length; index++) {
                 if (mapPoints[index].name == 'Menschenfalle' && userObject.team == 'SCIENTIST') {
                     bodyStr = ''
-                    res.end( JSON.stringify({'moved': false}) )
+                    res.end( JSON.stringify( {'moved': false}) )
                 }
                 if (mapPoints[index].name == 'Roboterfalle' && userObject.team == 'ROBOT') {
                     bodyStr = ''
-                    res.end( JSON.stringify({'moved': false}) )
+                    res.end( JSON.stringify( {'moved': false}) )
                 }    
             }
             
@@ -194,8 +188,8 @@ app.post('/action', function (req, res) {
             if (bodyStr == 'HARVEST') {
                 var mapPoints = findMapPoints(currentPlayer.x, currentPlayer.y)
                 for (var index = 0; index < mapPoints.length; index++) {
-                    if (mapPoints[index].name == 'Stein' && currentPlayer.energy <= 200) {
-                        currentPlayer.energy = currentPlayer.energy + 10
+                    if (mapPoints[index].name == 'Stein' && currentPlayer.energy < 200) {
+                        currentPlayer.energy = currentPlayer.energy + 20
                     } else {
                         res.end( JSON.stringify({'error': true}) )
                     }
@@ -341,6 +335,7 @@ app.get('/generateMap', function (req, res) {
         }
     }
     cachedFiles['map.json'] = map
+    cachedFiles['players.json'] = []
     res.end( 'map generiert' );
 })
 
@@ -478,16 +473,16 @@ function generateCords (type) {
 }
 
 function mapItem (x, y, name, type, interaction, blocked, sprite, needTool, buttonText) {
-    this.id = cachedFiles['globalIDs.json'].lastid
+  this.id = cachedFiles['globalIDs.json'].lastid
 	this.name = name
 	this.type = type
-    this.buttonText = buttonText
+  this.buttonText = buttonText
 	this.blocked = blocked || false
 	this.needTool = needTool || "",
 	this.x = x
-    this.y = y
-    this.sprites = {'default': sprite}
-    cachedFiles['globalIDs.json'].lastid++
+  this.y = y
+  this.sprites = {'default': sprite}
+  cachedFiles['globalIDs.json'].lastid++
 }
 
 function newPlayer (x, y) {
@@ -497,10 +492,12 @@ function newPlayer (x, y) {
     this.type = 'Player'
     this.x = x
     this.y = y
+
     if (randomNumber(1,2) == 1) {
         this.team = 'ROBOT'
         this.sprites = {
-            "default": allRobotSprites[randomNumber(0, allRobotSprites.length)]
+            "default": allRobotSprites[randomNumber(0, allRobotSprites.length)],
+            "working": "" // "Robot1-working.gif"
         }
     } else {
         this.team = "SCIENTIST"
@@ -545,6 +542,6 @@ saveDB()
 cleanTraps()
 
 // server
-var server = app.listen(process.env.PORT || 1337, function () {
-    // nothing
-})
+var listener = app.listen(process.env.PORT, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
+});
